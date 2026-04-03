@@ -3,49 +3,61 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SixBeeHealthCare</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/SixBeeHealthCare.styles.css" asp-append-version="true" />
+    <title>@(ViewData["Title"] != null ? $"{ViewData["Title"]} — " : "")SixBee HealthTech</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">SixBeeHealthCare</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                    </ul>
+<body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="bg-blue-700 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand -->
+                <a href="/" class="flex items-center gap-2 font-semibold text-lg tracking-tight">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 11c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm-6 0c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zM3 17c0-2.8 2.7-5 6-5 .7 0 1.4.1 2 .3M21 17c0-2.8-2.7-5-6-5-.7 0-1.4.1-2 .3M12 2a10 10 0 110 20A10 10 0 0112 2z" />
+                    </svg>
+                    SixBee HealthTech
+                </a>
+
+                <!-- Nav links -->
+                <div class="flex items-center gap-4">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a href="/Admin" class="text-sm hover:text-blue-200 transition-colors">Dashboard</a>
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit"
+                                    class="text-sm bg-blue-600 hover:bg-blue-500 px-3 py-1.5 rounded transition-colors">
+                                Logout
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a href="/" class="text-sm hover:text-blue-200 transition-colors">Book Appointment</a>
+                        <a href="/Account/Login"
+                           class="text-sm bg-blue-600 hover:bg-blue-500 px-3 py-1.5 rounded transition-colors">
+                            Admin Login
+                        </a>
+                    }
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+        </div>
+    </nav>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - SixBeeHealthCare - <a asp-area="" asp-page="/Privacy">Privacy</a>
+    <!-- Page content -->
+    <main class="flex-1">
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-4 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm text-gray-400">
+            &copy; @DateTime.Now.Year SixBee HealthTech &mdash; West Yorkshire
         </div>
     </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

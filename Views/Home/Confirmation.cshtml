@@ -1,5 +1,20 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Appointment Requested";
 }
+
+<div class="max-w-lg mx-auto px-4 py-20 text-center">
+    <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+    </div>
+    <h1 class="text-2xl font-bold text-gray-900 mb-3">Appointment Request Submitted</h1>
+    <p class="text-gray-500 mb-8">
+        Thank you! Your appointment request has been received and is pending approval from the practice.
+        We'll be in touch via the contact details you provided.
+    </p>
+    <a href="/"
+       class="inline-block bg-blue-700 hover:bg-blue-600 text-white font-semibold px-6 py-2.5 rounded-lg transition-colors">
+        Book Another Appointment
+    </a>
+</div>

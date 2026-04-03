@@ -1,12 +1,40 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SixBeeHealthCare.Web.Models;
+using SixBeeHealthCare.Web.Services.Interfaces;
+using SixBeeHealthCare.Web.ViewModels;
 
 namespace SixBeeHealthCare.Web.Controllers
 {
-    public class HomeController : Controller
+    /// <summary>
+    /// Handles the patient appointment booking form.
+    /// </summary>
+    public class HomeController(IAppointmentService appointmentService) : Controller
     {
-        public IActionResult Index()
+        [HttpGet]
+        public IActionResult Index() => View(new BookingViewModel());
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(BookingViewModel model)
         {
-            return View();
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var appointment = new Appointment
+            {
+                PatientName = model.PatientName,
+                AppointmentDateTime = model.AppointmentDateTime,
+                Description = model.Description,
+                ContactNumber = model.ContactNumber,
+                EmailAddress = model.EmailAddress
+            };
+
+            await appointmentService.CreateAsync(appointment);
+
+            return RedirectToAction(nameof(Confirmation));
         }
+
+        [HttpGet]
+        public IActionResult Confirmation() => View();
     }
 }
