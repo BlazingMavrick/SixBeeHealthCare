@@ -11,7 +11,10 @@ namespace SixBeeHealthCare.Web.Controllers
     public class HomeController(IAppointmentService appointmentService) : Controller
     {
         [HttpGet]
-        public IActionResult Index() => View(new BookingViewModel());
+        public IActionResult Index() => View(new BookingViewModel
+        {
+            AppointmentDateTime = DateTime.Now
+        });
 
         [HttpPost]
         [ValidateAntiForgeryToken]
