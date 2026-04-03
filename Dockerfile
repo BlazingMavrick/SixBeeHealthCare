@@ -14,19 +14,19 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-1809 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["SixBeeHealthCare.csproj", "."]
-RUN dotnet restore "./SixBeeHealthCare.csproj"
+COPY ["SixBeeHealthCare.Web.csproj", "."]
+RUN dotnet restore "./SixBeeHealthCare.Web.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "./SixBeeHealthCare.csproj" -c %BUILD_CONFIGURATION% -o /app/build
+RUN dotnet build "./SixBeeHealthCare.Web.csproj" -c %BUILD_CONFIGURATION% -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./SixBeeHealthCare.csproj" -c %BUILD_CONFIGURATION% -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./SixBeeHealthCare.Web.csproj" -c %BUILD_CONFIGURATION% -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "SixBeeHealthCare.dll"]
+ENTRYPOINT ["dotnet", "SixBeeHealthCare.Web.dll"]

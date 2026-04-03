@@ -12,9 +12,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
+EnsureDatabaseExists(connectionString);
 
 builder.Services.AddScoped<IDatabase>(_ =>
-    new Database(new SqlConnection(connectionString), DatabaseType.SqlServer2012));
+{
+    var connection = new SqlConnection(connectionString);
+    connection.Open();
+    return new Database(connection, DatabaseType.SqlServer2012);
+});
 
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
@@ -59,5 +64,32 @@ app.MapControllerRoute(
 
 app.Run();
 
+static void EnsureDatabaseExists(string connectionString)
+{
+    var builder = new SqlConnectionStringBuilder(connectionString);
+    var databaseName = builder.InitialCatalog;
+
+    if (string.IsNullOrWhiteSpace(databaseName))
+    {
+        return;
+    }
+
+    var masterConnectionString = new SqlConnectionStringBuilder(connectionString)
+    {
+        InitialCatalog = "master"
+    }.ConnectionString;
+
+    using var connection = new SqlConnection(masterConnectionString);
+    connection.Open();
+
+    using var command = connection.CreateCommand();
+    command.CommandText = $@"
+IF DB_ID(@databaseName) IS NULL
+BEGIN
+    EXEC('CREATE DATABASE [{databaseName}]')
+END";
+    command.Parameters.AddWithValue("@databaseName", databaseName);
+    command.ExecuteNonQuery();
+}
 
 public partial class Program { }

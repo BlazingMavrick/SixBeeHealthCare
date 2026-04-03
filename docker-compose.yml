@@ -22,11 +22,11 @@ services:
   web:
     build:
       context: .
-      dockerfile: src/SixBeeHealthCare.Web/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     environment:
-      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=SixBeeHealthCareWeb;User Id=sa;Password=SixBee_Dev_2026!;TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=SixBeeHealthCare;User Id=sa;Password=SixBee_Dev_2026!;TrustServerCertificate=True
       - ASPNETCORE_ENVIRONMENT=Production
     depends_on:
       db:
