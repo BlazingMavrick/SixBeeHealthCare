@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "SixBee_Dev_2026!"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqldata:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P SixBee_Dev_2026! -Q 'SELECT 1' -No || exit 1"]
+      interval: 10s
+      retries: 10
+      start_period: 30s
+      timeout: 5s
+
+  web:
+    build:
+      context: .
+      dockerfile: src/SixBeeHealthCare.Web/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=SixBeeHealthCareWeb;User Id=sa;Password=SixBee_Dev_2026!;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Production
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  sqldata:
